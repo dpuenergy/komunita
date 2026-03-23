@@ -1932,7 +1932,7 @@ st.markdown("""
 [data-testid="stHeader"]{display:none!important}
 [data-testid="stAppViewContainer"]>section:first-child{padding-top:56px!important}
 #dpu-nb{position:fixed;top:0;left:0;right:0;height:48px;background:#1b3280;color:#fff;
-  display:flex;align-items:center;padding:0 20px;gap:10px;z-index:999999;
+  display:flex;align-items:center;padding:0 20px;gap:10px;z-index:2147483647;
   font-family:system-ui,sans-serif;font-size:14px;box-shadow:0 2px 12px rgba(0,0,0,.28)}
 #dpu-nb a{color:#fff;text-decoration:none;opacity:.70}
 #dpu-nb a:hover{opacity:1}
@@ -1940,17 +1940,24 @@ st.markdown("""
   display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px}
 #dpu-nb .sep{opacity:.25;font-size:18px}
 #dpu-nb .dn{font-weight:600}
+#dpu-nb .du{margin-left:auto;font-size:12px;opacity:.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
 </style>
 <div id="dpu-nb">
-  <a href="https://calm-cocada-79e019.netlify.app/">← Hub</a>
+  <a href="https://calm-cocada-79e019.netlify.app/">&#8592; Hub</a>
   <span class="sep">|</span>
   <div class="dm">DE</div>
   <span class="dn">Energetická komunita</span>
-  <span id="dpu-usr"></span>
+  <span id="dpu-usr" class="du"></span>
 </div>
 <script>
-var u = new URLSearchParams(window.location.search).get("dpu_user");
-if(u){ var el=document.getElementById("dpu-usr"); el.style.cssText="margin-left:auto;font-size:12px;opacity:.6"; el.textContent=u; }
+(function(){
+  var u = new URLSearchParams(window.location.search).get("dpu_user") || "";
+  var nb = document.getElementById("dpu-nb");
+  if(!nb) return;
+  if(u) document.getElementById("dpu-usr").textContent = u;
+  // Přesuň navbar přímo do body — obchází Streamlit CSS transform stacking context
+  if(nb.parentNode !== document.body) document.body.insertBefore(nb, document.body.firstChild);
+})();
 </script>
 """, unsafe_allow_html=True)
 
