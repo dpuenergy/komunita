@@ -1,0 +1,98 @@
+C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\ec_balance\pipeline
+
+python -m ec_balance.pipeline.step1_wide_to_long `
+  --eano_wide "C:\Users\jakub\DPU REVIT s.r.o\DPU Energy - Dokumenty\General\Projekty\AKTUÁLNÍ\1013006_Město Klášterec n.O._Studie komunitní energetiky\02_Výpočty\ean_o.csv" `
+  --eand_wide "C:\Users\jakub\DPU REVIT s.r.o\DPU Energy - Dokumenty\General\Projekty\AKTUÁLNÍ\1013006_Město Klášterec n.O._Studie komunitní energetiky\02_Výpočty\ean_d_400_zs kratka.csv" `
+  --outdir "csv" `
+  --wide_sep "auto" `
+  --site_row_file 2 `
+  --kwp_row_file 3 `
+  --units mwh
+
+python -m ec_balance.pipeline.step2_local_pv `
+  --eano_long_csv "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\ean_o_long.csv" `
+  --eand_long_csv "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\ean_d_long.csv" `
+  --outdir "csv" `
+  --pair_freq "60min" `
+  --site_map_csv "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\site_map.csv"
+
+
+python -m ec_balance.pipeline.step3_sharing `
+  --eano_after_pv_csv "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\eano_after_pv.csv" `
+  --eand_after_pv_csv "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\eand_after_pv.csv" `
+  --local_selfcons_csv "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\local_selfcons.csv" `
+  --outdir "csv" `
+  --price_commodity_mwh 2500 `
+  --price_distribution_mwh 2000 `
+  --price_feed_in_mwh 800 `
+  --mode hybrid `
+  --max_recipients 5
+
+
+python -m ec_balance.pipeline.step4a_batt_local_byhour `
+  --eano_after_pv_csv "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\eano_after_pv.csv" `
+  --eand_after_pv_csv "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\eand_after_pv.csv" `
+  --kwp_csv "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\kwp_by_site.csv" `
+  --outdir "csv" `
+  --fixed_cap_kwh 96 `
+  --eta_c 0.95 `
+  --eta_d 0.95
+
+python -m ec_balance.pipeline.step4_batt_local `
+  --eano_after_pv_csv "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\eano_after_pv.csv" `
+  --eand_after_pv_csv "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\eand_after_pv.csv" `
+  --kwp_csv "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\kwp_by_site.csv" `
+  --outdir "csv" `
+  --price_commodity_mwh 2500 `
+  --price_distribution_mwh 2000 `
+  --price_feed_in_mwh 800 `
+  --cap_kwh_list "0,10,20,30,40,50,60,70,80,90,96"
+
+
+
+
+python -m ec_balance.pipeline.step5a_batt_central_byhour `
+  --eano_after_pv_csv "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\eano_after_pv.csv" `
+  --eand_after_pv_csv "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\eand_after_pv.csv" `
+  --central_site "Zimní stadion" `
+  --cap_kwh 500 `
+  --eta_c 0.95 `
+  --eta_d 0.95 `
+  --outdir "csv"
+
+# 5 – citlivost kapacity nad rezidui celé komunity (po sdílení, krok 3)
+python -m ec_balance.pipeline.step5_batt_central `
+  --by_hour_csv "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\by_hour_after.csv" `
+  --kwp_csv "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\kwp_by_site.csv" `
+  --cap_kwh_list "0,100,200,300,500,1000,2000" `
+  --eta_c 0.95 `
+  --eta_d 0.95 `
+  --outdir "csv"
+
+
+python -m ec_balance.pipeline.step5_excel_econ `
+  --csv_dir "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\" `
+  --outdir  "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\excel\" `
+  --scenarios "s1,s2,s3,s4a,s4b" `
+  --price_commodity_mwh 2500 `
+  --price_distribution_mwh 2000 `
+  --price_feed_in_mwh 800 `
+  --by_hour_bat_local_csv   "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\by_hour_after_bat_local.csv" `
+  --by_hour_bat_central_csv "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\by_hour_after_bat_central.csv"
+
+
+python  -m ec_balance.pipeline.step6_excel_scenarios `
+  --csv_dir "csv" `
+  --outdir  "excel" `
+  --scenarios "s1,s2,s3,s4a,s4b" `
+  --price_commodity_mwh 2500 `
+  --price_distribution_mwh 1600 `
+  --price_feed_in_mwh 1200 `
+  --by_hour_bat_local_csv   "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\by_hour_after_bat_local.csv" `
+  --by_hour_bat_central_csv "C:\Users\jakub\Downloads\ec_balance_scaffold\energeticka-komunita-bilance\src\csv\by_hour_after_bat_central.csv" `
+  --local_price_per_kwh 10000 `
+  --local_fixed_cost 0 `
+  --central_price_per_kwh 6000 `
+  --central_fixed_cost 500000 `
+  --project_years 15 `
+  --discount_rate 0.05
