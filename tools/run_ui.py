@@ -1910,6 +1910,26 @@ def compute_overview(rp: "RunPaths") -> tuple[pd.DataFrame, dict[str, pd.DataFra
 # UI state
 # ----------------------------
 st.set_page_config(page_title="Energetická komunita – pipeline", layout="wide")
+st.markdown("""
+<style>
+[data-testid="stAppViewContainer"]>section:first-child{padding-top:56px}
+#dpu-nb{position:fixed;top:0;left:0;right:0;height:48px;background:#1b3280;color:#fff;
+  display:flex;align-items:center;padding:0 20px;gap:10px;z-index:999999;
+  font-family:system-ui,sans-serif;font-size:14px;box-shadow:0 2px 12px rgba(0,0,0,.28)}
+#dpu-nb a{color:#fff;text-decoration:none;opacity:.70}
+#dpu-nb a:hover{opacity:1}
+#dpu-nb .dm{width:26px;height:26px;background:#2e8cff;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px}
+#dpu-nb .sep{opacity:.25;font-size:18px}
+#dpu-nb .dn{font-weight:600}
+</style>
+<div id="dpu-nb">
+  <a href="https://calm-cocada-79e019.netlify.app/">← Hub</a>
+  <span class="sep">|</span>
+  <div class="dm">DE</div>
+  <span class="dn">Energetická komunita</span>
+</div>
+""", unsafe_allow_html=True)
 
 st.title("Energetická komunita – pipeline (UI)")
 
