@@ -1929,7 +1929,12 @@ st.markdown("""
   <span class="sep">|</span>
   <div class="dm">DE</div>
   <span class="dn">Energetická komunita</span>
+  <span id="dpu-usr"></span>
 </div>
+<script>
+var u = new URLSearchParams(window.location.search).get("dpu_user");
+if(u){ var el=document.getElementById("dpu-usr"); el.style.cssText="margin-left:auto;font-size:12px;opacity:.6"; el.textContent=u; }
+</script>
 """, unsafe_allow_html=True)
 
 st.title("Energetická komunita – pipeline (UI)")
