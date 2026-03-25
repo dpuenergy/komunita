@@ -1,6 +1,6 @@
 numpy
 pandas
 openpyxl
-streamlit
-altair
+streamlit>=1.35.0,<2
+altair>=5.0,<6
 .
